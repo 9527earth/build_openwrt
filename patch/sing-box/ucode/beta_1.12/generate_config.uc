@@ -26,12 +26,14 @@ const conffile = uci.get('sing-box', 'main', 'conffile') || '/etc/sing-box/confi
       dns_port = uci.get('sing-box', 'basic', 'dns_port') || '2053',
       redirect_port = uci.get('sing-box', 'basic', 'redirect_port') || '2331',
       override = uci.get('sing-box', 'advanced', 'override') || '1',
-      main_dns_server = uci.get('sing-box', 'advanced', 'main_dns_server') || 'https://dns.cloudflare.com/dns-query',
-      china_dns_server = uci.get('sing-box', 'advanced', 'china_dns_server') || 'h3://223.5.5.5/dns-query',
-      filter_nodes = uci.get('sing-box', 'advanced', 'filter_nodes') || '0',
-      filter_keywords = uci.get('sing-box', 'advanced', 'filter_keywords') || '流量,套餐,重置,官網,官网,群组',
+      main_dns_type = uci.get('sing-box', 'advanced', 'main_dns_type') || 'https',
+      main_dns_server = uci.get('sing-box', 'advanced', 'main_dns_server') || 'dns.cloudflare.com',
+      china_dns_type = uci.get('sing-box', 'advanced', 'china_dns_type') || 'h3',
+      china_dns_server = uci.get('sing-box', 'advanced', 'china_dns_server') || '223.5.5.5',
       adblock = uci.get('sing-box', 'advanced', 'adblock') || '0',
       ad_ruleset = uci.get('sing-box', 'advanced', 'ad_ruleset') || '',
+      filter_nodes = uci.get('sing-box', 'advanced', 'filter_nodes') || '0',
+      filter_keywords = uci.get('sing-box', 'advanced', 'filter_keywords') || '流量,套餐,重置,官網,官网,群组',
       group_nodes = uci.get('sing-box', 'advanced', 'group_nodes') || '0',
       stream = uci.get('sing-box', 'advanced', 'stream') || '0',
       stream_list = uci.get('sing-box', 'advanced', 'stream_list') || 'Google,Github,Telegram,OpenAI,Spotify';
@@ -82,7 +84,7 @@ ad_rulelist = filter(ad_rulelist, length);
 
 let proxy_group_out = [];
 push(proxy_group_out, '节点选择');
-if (group_nodes === '1') {
+if(group_nodes === '1') {
     for (let k in nodes_area)
         push(proxy_group_out, k);
     push(proxy_group_out, '其他');
@@ -154,20 +156,19 @@ if (override === '1') {
         servers: [
             {
                 tag: 'main-dns',
-                address: main_dns_server,
-                address_resolver: 'china-dns'
+                type: main_dns_type,
+                server: main_dns_server,
+                domain_resolver: 'china-dns',
+                detour: '节点选择'
             },
             {
                 tag: 'china-dns',
-                address: china_dns_server,
+                type: china_dns_type,
+                server: china_dns_server,
                 detour: '直连'
             }
         ],
         rules: [
-            {
-                outbound: 'any',
-                server: 'china-dns'
-            },
             {
                 clash_mode: 'global',
                 server: 'main-dns'
@@ -212,6 +213,11 @@ if (override === '1') {
 }
 
 /* Experimental */
+let dns_types = [];
+for (let i = 0; i < length(config.dns.servers); i++)
+    push(dns_types, config.dns.servers[i].type);
+dns_types = uniq(dns_types);
+
 config.experimental = {
     clash_api: {
         external_controller: '0.0.0.0:' + external_controller_port,
@@ -223,7 +229,7 @@ config.experimental = {
     },
     cache_file: {
         enabled: true,
-        store_fakeip: (exists(config.dns, 'fakeip')) ? config.dns.fakeip.enabled : null,
+        store_fakeip: ('fakeip' in dns_types) || null,
         store_rdrc: (store_rdrc === '1') || null
     }
 };
@@ -350,6 +356,9 @@ if (override === '1') {
     config.route = {
         final: '节点选择',
         auto_detect_interface: true,
+        default_domain_resolver: {
+            server: 'china-dns'
+        },
         rules: [
             {
                 action: 'sniff'

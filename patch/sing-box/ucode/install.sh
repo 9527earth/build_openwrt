@@ -56,6 +56,12 @@ if [ $? -ne 0 ]; then
     echo -e "${RED_COLOR}ERROR${RES} download china_ip4 file failed."
     exit 1
 fi
+echo -e "${GREEN_COLOR}INFO${RES} Download stream file ..."
+curl --connect-timeout 30 -m 600 -kLo /etc/sing-box/resources/stream.json $mirror${download_dir}/shared/stream.json
+if [ $? -ne 0 ]; then
+    echo -e "${RED_COLOR}ERROR${RES} download stream file failed."
+    exit 1
+fi
 echo -e "${GREEN_COLOR}INFO${RES} Fix permissions ...\n"
 chmod +x /etc/init.d/sing-box
 if [ $? -ne 0 ]; then
