@@ -50,6 +50,7 @@ docker_2_services
 popd
 # nlbw
 sed -i 's,services,network,g' package/feeds/luci/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
+sed -i 's,services,network,g' package/feeds/luci/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
 # ttyd
 sed -i 's,services,system,g' package/feeds/luci/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json
 # 晶晨宝盒
@@ -66,9 +67,6 @@ mkdir -p ./files
 cp -rf ../files/init/* ./files/
 mkdir -p ./files/etc/uci-defaults
 cp -f ../patch/default-settings/openwrt-24.10/zzz-default-settings ./files/etc/uci-defaults/
-mkdir -p ./files/usr/sbin
-wget -qO- https://github.com/filebrowser/filebrowser/releases/latest/download/linux-arm64-filebrowser.tar.gz | tar xOvz filebrowser > files/usr/sbin/filebrowser
-chmod +x files/usr/sbin/filebrowser
 
 # 清理临时文件
 find ./ -name *.orig | xargs rm -f

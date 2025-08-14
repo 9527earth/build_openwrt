@@ -65,6 +65,7 @@ docker_2_services
 popd
 # Nlbw 带宽监控
 sed -i 's,services,network,g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
+sed -i 's,services,network,g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
 # Nikki
 cp -rf ../openwrt-apps/OpenWrt-nikki ./package/new/luci-app-nikki
 # 晶晨宝盒
@@ -81,9 +82,6 @@ mkdir -p ./files
 cp -rf ../files/init/* ./files/
 mkdir -p ./files/etc/uci-defaults
 cp -f ../patch/default-settings/immortalwrt-24.10/zzz-default-settings ./files/etc/uci-defaults/
-mkdir -p ./files/usr/bin
-wget -qO- https://github.com/filebrowser/filebrowser/releases/latest/download/linux-arm64-filebrowser.tar.gz | tar xOvz filebrowser > files/usr/bin/filebrowser
-chmod +x files/usr/bin/filebrowser
 
 # 清理临时文件
 find ./ -name *.orig | xargs rm -f

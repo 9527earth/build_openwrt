@@ -56,6 +56,7 @@ sed -i 's,\"system\",\"services\",g' feeds/luci/applications/luci-app-cpufreq/ro
 sed -i 's,\"NAS\",\"Services\",g;s,\"nas\",\"services\",g' feeds/luci/applications/luci-app-rclone/luasrc/controller/rclone.lua
 # Nlbw 带宽监控
 sed -i 's,services,network,g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
+sed -i 's,services,network,g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
 # 终端 TTYD
 sed -i 's,services,system,g' feeds/luci/applications/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json
 # Docker 容器
@@ -76,9 +77,6 @@ mkdir -p ./files
 cp -rf ../files/{init/*,cpufreq/*} ./files/
 mkdir -p ./files/etc/uci-defaults
 cp -f ../patch/default-settings/lede/zzz-default-settings ./files/etc/uci-defaults/
-mkdir -p ./files/usr/bin
-wget -qO- https://github.com/filebrowser/filebrowser/releases/latest/download/linux-arm64-filebrowser.tar.gz | tar xOvz filebrowser > files/usr/bin/filebrowser
-chmod +x files/usr/bin/filebrowser
 
 # 清理临时文件
 find ./ -name *.orig | xargs rm -f
