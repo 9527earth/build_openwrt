@@ -218,7 +218,7 @@ if (override === '1') {
 /* Experimental */
 let dns_types = [];
 for (let i = 0; i < length(config.dns.servers); i++)
-    push(dns_types, config.dns.servers[i],type);
+    push(dns_types, config.dns.servers[i].type);
 dns_types = uniq(dns_types);
 
 config.experimental = {
@@ -353,9 +353,7 @@ for (let i = 0; i < length(config.outbounds); i++)
 /* Route */
 if (override === '1') {
     config.route = {
-        default_domain_resolver: {
-            server: 'china-dns'
-        },
+        default_domain_resolver: 'china-dns',
         final: '节点选择',
         auto_detect_interface: true,
         rules: [

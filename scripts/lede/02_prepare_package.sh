@@ -20,6 +20,7 @@ patch -p1 < ../../../patch/firewall/04-luci-add-firewall4-nft-rules-file.patch
 popd
 
 ### 额外的 LuCI 应用和依赖 ###
+mkdir -p ./package/new
 # 调整刷机脚本
 patch -p1 < ../patch/custom_install/lede/custom_target_amlogic_scripts.patch
 # 调整 default settings
@@ -67,7 +68,6 @@ pushd feeds/luci/applications/luci-app-dockerman
 docker_2_services
 popd
 # Momo
-mkdir -p ./package/new
 cp -rf ../momo ./package/new/luci-app-momo
 
 # 生成默认配置及缓存
@@ -76,9 +76,8 @@ sed -i 's,/bin/ash,/bin/bash,' package/base-files/files/etc/passwd
 sed -i 's,/bin/ash,/bin/bash,' package/base-files/files/usr/libexec/login.sh
 
 # 预配置一些插件
-mkdir -p ./files
-cp -rf ../files/{init/*,cpufreq/*} ./files/
 mkdir -p ./files/etc/uci-defaults
+cp -rf ../files/{init/*,cpufreq/*} ./files/
 cp -f ../patch/default-settings/lede/zzz-default-settings ./files/etc/uci-defaults/
 
 # 清理临时文件
