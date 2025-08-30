@@ -41,9 +41,14 @@ cp -rf ../openwrt-apps/openwrt_helloworld/luci-app-passwall ./feeds/luci/applica
 rm -rf ./feeds/packages/net/sing-box
 cp -rf ../openwrt-apps/openwrt_helloworld/sing-box ./feeds/packages/net/sing-box
 # FTP 服务器
-pushd feeds/luci/applications/luci-app-vsftpd
-move_2_services nas
-popd
+rm -rf ./feeds/luci/applications/luci-app-vsftpd
+cp -rf ../openwrt-apps/luci-app-vsftpd ./feeds/luci/applications/luci-app-vsftpd
+# pushd feeds/luci/applications/luci-app-vsftpd
+# move_2_services nas
+# popd
+# KMS 服务器
+rm -rf ./feeds/luci/applications/luci-app-vlmcsd
+cp -rf ../openwrt-apps/openwrt_pkgs/luci-app-vlmcsd ./feeds/luci/applications/luci-app-vlmcsd
 # Mosdns 白名单
 echo 'account.synology.com
 ddns.synology.com
